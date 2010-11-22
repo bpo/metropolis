@@ -1,0 +1,46 @@
+= \Metropolis: a key-value store for Rack
+
+\Metropolis is a Rack application used to store key value pairs.  It
+seeks to emulate the TokyoTyrant HTTP interface, but allows access to
+multiple databases through a single TCP port.  It hashes keys to split
+keys between different on-disk databases to work around scalability
+limitations of the kernel, hardware and filesystem.
+
+== Features
+
+* Currently supports the TokyoCabinet hash database format, other
+  database formats will be supported along with KyotoCabinet, as
+  well as other key-value stores.
+
+* Compatible with all Rack-compatible servers
+
+== Hacking
+
+You can get the latest source via git from the following locations:
+
+  git://git.bogomips.org/metropolis.git
+  git://repo.or.cz/metropolis.git (mirror)
+
+You may browse the code from the web and download the latest snapshot
+tarballs here:
+
+* http://git.bogomips.org/cgit/metropolis.git (cgit)
+* http://repo.or.cz/w/metropolis.git (gitweb)
+
+Inline patches (from "git format-patch") to the mailing list are
+preferred because they allow code review and comments in the reply to
+the patch.
+
+We will adhere to mostly the same conventions for patch submissions as
+git itself.  See the Documentation/SubmittingPatches document
+distributed with git on on patch submission guidelines to follow.  Just
+don't email the git mailing list or maintainer with \Metropolis patches.
+
+== Contact
+
+All feedback (bug reports, user/development discussion, patches, pull
+requests) go to the mailing list: mailto:metropolis@librelist.org
+
+Mailing list archives in mbox format may be downloaded here:
+
+http://metropolis.bogomips.org/archives/
