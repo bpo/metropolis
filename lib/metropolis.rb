@@ -3,7 +3,7 @@ require 'rack'
 require 'uri'
 
 module Metropolis
-  autoload :TokyoCabinet, 'metropolis/tokyocabinet'
+  autoload :TC, 'metropolis/tc'
 
   def self.new(opts = {})
     opts = opts.dup
@@ -15,7 +15,7 @@ module Metropolis
       opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
       case ext = File.extname(uri.path)
       when '.tch'
-        rv.extend Metropolis::TokyoCabinet::HDB
+        rv.extend Metropolis::TC::HDB
       else
         raise ArgumentError, "unsupported suffix: #{ext}"
       end

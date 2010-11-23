@@ -6,7 +6,7 @@ require 'tokyocabinet' # FIXME: emits warning with 1.29 gem
 $-w = true
 require 'metropolis'
 
-class TestTokyocabinetHDB < Test::Unit::TestCase
+class Test_TC_HDB < Test::Unit::TestCase
   attr_reader :tmp, :o, :uri
 
   def setup
@@ -22,7 +22,7 @@ class TestTokyocabinetHDB < Test::Unit::TestCase
 
   def osetup
     o = Object.new
-    o.extend Metropolis::TokyoCabinet::HDB
+    o.extend Metropolis::TC::HDB
     assert_nothing_raised do
       o.setup :path_pattern => @path_pattern
     end
@@ -136,7 +136,7 @@ class TestTokyocabinetHDB < Test::Unit::TestCase
     wr = osetup
     wr.put(key, { "rack.input" => StringIO.new("OK") })
     o = Object.new
-    o.extend Metropolis::TokyoCabinet::HDB
+    o.extend Metropolis::TC::HDB
     assert_nothing_raised do
       o.setup :path_pattern => @path_pattern, :read_only => true
     end
@@ -176,7 +176,7 @@ class TestTokyocabinetHDB < Test::Unit::TestCase
       obj = Metropolis.new(:uri => "#{uri}?#{query}")
     }
     optimize_args = obj.instance_variable_get(:@optimize)
-    flags = ::TokyoCabinet::HDB::TLARGE | ::TokyoCabinet::HDB::TDEFLATE
+    flags = TokyoCabinet::HDB::TLARGE | TokyoCabinet::HDB::TDEFLATE
     assert_equal flags, optimize_args[3]
     assert_equal 65536, optimize_args[0]
     assert_nil optimize_args[2]

@@ -2,10 +2,10 @@
 
 # this module is NOT thread-safe, all performance is dependent on the
 # local machine so there is never anything that needs yielding to threads.
-module Metropolis::TokyoCabinet::HDB
-  autoload :RO, 'metropolis/tokyocabinet/hdb/ro'
+module Metropolis::TC::HDB
+  autoload :RO, 'metropolis/tc/hdb/ro'
 
-  TCHDB = ::TokyoCabinet::HDB # :nodoc
+  TCHDB = TokyoCabinet::HDB # :nodoc
   include Rack::Utils # unescape
 
   def r(code)
