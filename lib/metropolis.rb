@@ -8,7 +8,7 @@ module Metropolis
   def self.new(opts = {})
     opts = opts.dup
     rv = Object.new
-    uri = URI.parse(opts[:uri])
+    uri = opts[:uri] = URI.parse(opts[:uri])
     case uri.scheme
     when 'tc'
       opts[:path_pattern] = uri.path

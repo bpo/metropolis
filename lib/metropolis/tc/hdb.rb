@@ -9,9 +9,7 @@ module Metropolis::TC::HDB
   include Metropolis::Common
 
   def setup(opts)
-    @headers = { 'Content-Type' => 'application/octet-stream' }
-    @headers.merge!(opts[:response_headers] || {})
-    @nr_slots = opts[:nr_slots] || 3
+    super
     path_pattern = opts[:path_pattern]
     path_pattern.scan(/%\d*x/).size == 1 or
       raise ArgumentError, "only one '/%\d*x/' may appear in #{path_pattern}"
@@ -41,7 +39,7 @@ module Metropolis::TC::HDB
     @dbv = (0...@nr_slots).to_a.map do |slot|
       path = sprintf(path_pattern, slot)
       hdb = TCHDB.new
-      unless opts[:readonly]
+      unless @readonly
         hdb.open(path, TCHDB::OWRITER | TCHDB::OCREAT) or ex!(:open, hdb)
         if @optimize
           hdb.optimize(*@optimize) or ex!(:optimize, hdb)
@@ -52,9 +50,7 @@ module Metropolis::TC::HDB
     end
     @rd_flags = TCHDB::OREADER
     @wr_flags = TCHDB::OWRITER
-    if opts[:readonly]
-      extend(RO)
-    end
+    extend(RO) if @readonly
   end
 
 

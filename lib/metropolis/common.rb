@@ -2,6 +2,14 @@
 module Metropolis::Common
   include Rack::Utils # unescape
 
+  def setup(opts)
+    @uri = opts[:uri]
+    @headers = { 'Content-Type' => 'application/octet-stream' }
+    @headers.merge!(opts[:response_headers] || {})
+    @nr_slots = opts[:nr_slots] || 3
+    @readonly = !!opts[:readonly]
+  end
+
   def r(code, body = nil)
     body ||= "#{HTTP_STATUS_CODES[code]}\n"
     [ code,
