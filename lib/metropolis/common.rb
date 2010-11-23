@@ -22,10 +22,10 @@ module Metropolis::Common
       when "PUT"
         put(key, env)
       else
-        [ 405, {}, [] ]
+        r(405)
       end
     else # OPTIONS
-      [ 405, {}, [] ]
+      r(405)
     end
   end
 end

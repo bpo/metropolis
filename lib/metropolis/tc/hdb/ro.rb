@@ -6,7 +6,7 @@ module Metropolis::TC::HDB::RO
       @wr_flags = nil
       @rd_flags |= TokyoCabinet::HDB::ONOLCK
       @dbv.each { |(hdb, path)|
-        hdb.open(path, @rd_flags) or ex!(:open, path)
+        hdb.open(path, @rd_flags) or ex!(:open, hdb)
       }
       @ro_dbv = @dbv.map { |(hdb,_)| hdb }
     end
@@ -21,10 +21,10 @@ module Metropolis::TC::HDB::RO
       when "HEAD"
         head(key)
       else
-        [ 405, {}, [] ]
+        r(403)
       end
     else # OPTIONS
-      [ 405, {}, [] ]
+      r(405)
     end
   end
 

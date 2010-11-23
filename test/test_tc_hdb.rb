@@ -137,7 +137,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     o = Object.new
     o.extend Metropolis::TC::HDB
     assert_nothing_raised do
-      o.setup :path_pattern => @path_pattern, :read_only => true
+      o.setup :path_pattern => @path_pattern, :readonly => true
     end
     %w(PUT DELETE).each do |rm|
       env = {
@@ -145,7 +145,7 @@ class Test_TC_HDB < Test::Unit::TestCase
         "REQUEST_METHOD" => rm,
         "PATH_INFO" => "/#{key}"
       }
-      assert_equal 405, o.call(env)[0]
+      assert_equal 403, o.call(env)[0]
     end
     env = {
       "REQUEST_METHOD" => "GET",
@@ -183,11 +183,11 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_nothing_raised { obj.get(k) }
     assert_nothing_raised { obj.put(k,{'rack.input' => StringIO.new(data)}) }
 
-    obj = Metropolis.new(:uri => "#{uri}?#{query}", :read_only => true)
+    obj = Metropolis.new(:uri => "#{uri}?#{query}", :readonly => true)
     assert_equal data, obj.get(k)[2].join('')
     obj.close!
 
-    obj = Metropolis.new(:uri => uri, :read_only => true)
+    obj = Metropolis.new(:uri => uri, :readonly => true)
     assert_equal data, obj.get(k)[2].join('')
     obj.close!
     sum = obj.instance_eval {

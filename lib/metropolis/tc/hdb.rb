@@ -41,7 +41,7 @@ module Metropolis::TC::HDB
     @dbv = (0...@nr_slots).to_a.map do |slot|
       path = sprintf(path_pattern, slot)
       hdb = TCHDB.new
-      unless opts[:read_only]
+      unless opts[:readonly]
         hdb.open(path, TCHDB::OWRITER | TCHDB::OCREAT) or ex!(:open, hdb)
         if @optimize
           hdb.optimize(*@optimize) or ex!(:optimize, hdb)
@@ -52,7 +52,7 @@ module Metropolis::TC::HDB
     end
     @rd_flags = TCHDB::OREADER
     @wr_flags = TCHDB::OWRITER
-    if opts[:read_only]
+    if opts[:readonly]
       extend(RO)
     end
   end
