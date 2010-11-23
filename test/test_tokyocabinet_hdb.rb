@@ -7,12 +7,13 @@ $-w = true
 require 'metropolis'
 
 class TestTokyocabinetHDB < Test::Unit::TestCase
-  attr_reader :tmp, :o
+  attr_reader :tmp, :o, :uri
 
   def setup
     tmp = Tempfile.new('tchdb')
     @path_pattern = tmp.path + ".%01x.tch"
     tmp.close!
+    @uri = "tc://#{@path_pattern}"
   end
 
   def teardown
@@ -167,7 +168,6 @@ class TestTokyocabinetHDB < Test::Unit::TestCase
     k = "x"
     nr_bytes = 1024 * 1024 * 20
     data = "0" * nr_bytes
-    uri = "tc://#{@path_pattern}"
     obj = nil
     assert_nothing_raised { obj = Metropolis.new(:uri => uri) }
 
