@@ -1,6 +1,7 @@
 # -*- encoding: binary -*-
 module Metropolis::Common
   include Rack::Utils # unescape
+  autoload :RO, 'metropolis/common/ro'
 
   def setup(opts)
     @uri = opts[:uri]
