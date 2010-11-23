@@ -26,3 +26,5 @@ module Metropolis
     rv
   end
 end
+
+require 'metropolis/common'

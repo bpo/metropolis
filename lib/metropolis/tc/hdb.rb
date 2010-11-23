@@ -6,14 +6,7 @@ module Metropolis::TC::HDB
   autoload :RO, 'metropolis/tc/hdb/ro'
 
   TCHDB = TokyoCabinet::HDB # :nodoc
-  include Rack::Utils # unescape
-
-  def r(code)
-    body = "#{HTTP_STATUS_CODES[code]}\n"
-    [ code,
-      { 'Content-Length' => body.size.to_s, 'Content-Type' => 'text/plain' },
-      [ body ] ]
-  end
+  include Metropolis::Common
 
   def setup(opts)
     @headers = { 'Content-Type' => 'application/octet-stream' }
@@ -64,25 +57,6 @@ module Metropolis::TC::HDB
     end
   end
 
-  def call(env)
-    if %r{\A/(.*)\z} =~ env["PATH_INFO"]
-      key = unescape($1)
-      case env["REQUEST_METHOD"]
-      when "GET"
-        get(key)
-      when "HEAD"
-        head(key)
-      when "DELETE"
-        delete(key)
-      when "PUT"
-        put(key, env)
-      else
-        [ 405, {}, [] ]
-      end
-    else # OPTIONS
-      [ 405, {}, [] ]
-    end
-  end
 
   def ex!(msg, hdb)
     raise "#{msg}: #{hdb.errmsg(hdb.ecode)}"
