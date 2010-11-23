@@ -45,7 +45,7 @@ module Metropolis::TokyoCabinet::HDB
       end
       @optimize << flags
     end
-    @hdbv = (0...@nr_slots).to_a.map do |slot|
+    @dbv = (0...@nr_slots).to_a.map do |slot|
       path = sprintf(path_pattern, slot)
       hdb = TCHDB.new
       unless opts[:read_only]
@@ -89,7 +89,7 @@ module Metropolis::TokyoCabinet::HDB
   end
 
   def writer(key, &block)
-    hdb, path = @hdbv[key.hash % @nr_slots]
+    hdb, path = @dbv[key.hash % @nr_slots]
     hdb.open(path, @wr_flags) or ex!(:open, hdb)
     yield hdb
     ensure
@@ -97,7 +97,7 @@ module Metropolis::TokyoCabinet::HDB
   end
 
   def reader(key)
-    hdb, path = @hdbv[key.hash % @nr_slots]
+    hdb, path = @dbv[key.hash % @nr_slots]
     hdb.open(path, @rd_flags) or ex!(:open, hdb)
     yield hdb
     ensure
@@ -155,6 +155,6 @@ module Metropolis::TokyoCabinet::HDB
   end
 
   def close!
-    @hdbv.each { |(hdb,_)| hdb.close }
+    @dbv.each { |(hdb,_)| hdb.close }
   end
 end

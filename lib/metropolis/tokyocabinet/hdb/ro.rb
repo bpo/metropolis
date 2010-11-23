@@ -5,10 +5,10 @@ module Metropolis::TokyoCabinet::HDB::RO
    obj.instance_eval do
       @wr_flags = nil
       @rd_flags |= ::TokyoCabinet::HDB::ONOLCK
-      @hdbv.each { |(hdb, path)|
+      @dbv.each { |(hdb, path)|
         hdb.open(path, @rd_flags) or ex!(:open, path)
       }
-      @ro_hdbv = @hdbv.map { |(hdb,_)| hdb }
+      @ro_dbv = @dbv.map { |(hdb,_)| hdb }
     end
   end
 
@@ -29,6 +29,6 @@ module Metropolis::TokyoCabinet::HDB::RO
   end
 
   def reader(key)
-    yield @ro_hdbv[key.hash % @nr_slots]
+    yield @ro_dbv[key.hash % @nr_slots]
   end
 end

@@ -192,7 +192,7 @@ class TestTokyocabinetHDB < Test::Unit::TestCase
     assert_equal data, obj.get(k)[2].join('')
     obj.close!
     sum = obj.instance_eval {
-      @hdbv.inject(0) { |size, (hdb,path)| size += File.stat(path).size }
+      @dbv.inject(0) { |size, (hdb,path)| size += File.stat(path).size }
     }
     assert sum <= nr_bytes, "#{sum} > #{nr_bytes}"
     obj.close!
