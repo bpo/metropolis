@@ -2,8 +2,8 @@
 module Metropolis::Common
   include Rack::Utils # unescape
 
-  def r(code)
-    body = "#{HTTP_STATUS_CODES[code]}\n"
+  def r(code, body = nil)
+    body ||= "#{HTTP_STATUS_CODES[code]}\n"
     [ code,
       { 'Content-Length' => body.size.to_s, 'Content-Type' => 'text/plain' },
       [ body ] ]

@@ -1,13 +1,12 @@
 # -*- encoding: binary -*-
-require 'test/unit'
-require 'tempfile'
-require 'stringio'
+require './test/rack_read_write.rb'
 require 'tokyocabinet' # FIXME: emits warning with 1.29 gem
 $-w = true
 require 'metropolis'
 
 class Test_TC_HDB < Test::Unit::TestCase
   attr_reader :tmp, :o, :uri
+  include TestRackReadWrite
 
   def setup
     tmp = Tempfile.new('tchdb')
@@ -82,8 +81,8 @@ class Test_TC_HDB < Test::Unit::TestCase
     r = o.head('hellox')
     assert_equal 404, r[0].to_i
     assert_equal 'text/plain', r[1]['Content-Type']
-    assert_equal '10', r[1]['Content-Length']
-    assert_equal "Not Found\n", r[2].join('')
+    assert_equal '0', r[1]['Content-Length']
+    assert_equal "", r[2].join('')
   end
 
   def test_putkeep

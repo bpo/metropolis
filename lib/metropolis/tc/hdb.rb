@@ -109,7 +109,7 @@ module Metropolis::TC::HDB
 
   def head(key)
     size = reader(key) { |hdb| hdb.vsiz(key) or ex!(:vsiz, hdb) }
-    0 > size and return r(404)
+    0 > size and return r(404, "")
     [ 200, { 'Content-Length' => size.to_s }.merge!(@headers), [] ]
   end
 
