@@ -128,7 +128,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     res = Process.waitall
     assert_equal nr, res.size
     res.each { |(pid, status)| assert status.success? }
-  end
+  end if ENV["TEST_EXPENSIVE"]
 
   def test_readonly
     key = "x"
