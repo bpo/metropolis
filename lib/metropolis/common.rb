@@ -37,4 +37,12 @@ module Metropolis::Common
       r(405)
     end
   end
+
+  # generic HEAD implementation, some databases can optimize this by
+  # not retrieving the value
+  def head(key)
+    r = get(key)
+    r[2].clear
+    r
+  end
 end

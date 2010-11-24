@@ -4,12 +4,16 @@ require 'uri'
 
 module Metropolis
   autoload :TC, 'metropolis/tc'
+  autoload :Hash, 'metropolis/hash'
 
   def self.new(opts = {})
     opts = opts.dup
     rv = Object.new
     uri = opts[:uri] = URI.parse(opts[:uri])
     case uri.scheme
+    when 'hash'
+      opts[:path] = uri.path if uri.path != '/'
+      rv.extend Metropolis::Hash
     when 'tc'
       opts[:path_pattern] = uri.path
       opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
