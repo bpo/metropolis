@@ -196,4 +196,30 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert sum <= nr_bytes, "#{sum} > #{nr_bytes}"
     obj.close!
   end
+
+  def test_exclusive
+    @app = Metropolis.new(:uri => uri, :exclusive => true)
+    assert_equal(app.method(:reader), app.method(:writer))
+    basic_rest
+  end
+
+  def test_no_rdlock
+    @app = Metropolis.new(:uri => "#{uri}?rdlock=false")
+    nolck = ::TokyoCabinet::HDB::ONOLCK
+    flags = @app.instance_variable_get(:@rd_flags)
+    assert((flags & nolck) == nolck)
+    flags = @app.instance_variable_get(:@wr_flags)
+    assert((flags & nolck) == 0)
+    basic_rest
+  end
+
+  def test_no_wrlock
+    @app = Metropolis.new(:uri => "#{uri}?wrlock=false")
+    nolck = ::TokyoCabinet::HDB::ONOLCK
+    flags = @app.instance_variable_get(:@wr_flags)
+    assert((flags & nolck) == nolck)
+    flags = @app.instance_variable_get(:@rd_flags)
+    assert((flags & nolck) == 0)
+    basic_rest
+  end
 end

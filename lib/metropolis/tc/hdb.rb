@@ -4,6 +4,7 @@
 # local machine so there is never anything that needs yielding to threads.
 module Metropolis::TC::HDB
   autoload :RO, 'metropolis/tc/hdb/ro'
+  autoload :EX, 'metropolis/tc/hdb/ex'
 
   TCHDB = TokyoCabinet::HDB # :nodoc
   include Metropolis::Common
@@ -13,13 +14,34 @@ module Metropolis::TC::HDB
     path_pattern = opts[:path_pattern]
     path_pattern.scan(/%\d*x/).size == 1 or
       raise ArgumentError, "only one '/%\d*x/' may appear in #{path_pattern}"
+
+    @rd_flags = TCHDB::OREADER
+    @wr_flags = TCHDB::OWRITER
+
     @optimize = nil
     if query = opts[:query]
+      case query['rdlock']
+      when 'true', nil
+      when 'false'
+        @rd_flags |= TCHDB::ONOLCK
+      else
+        raise ArgumentError, "'rdlock' must be 'true' or 'false'"
+      end
+
+      case query['wrlock']
+      when 'true', nil
+      when 'false'
+        @wr_flags |= TCHDB::ONOLCK
+      else
+        raise ArgumentError, "'wrlock' must be 'true' or 'false'"
+      end
+
       flags = 0
       @optimize = %w(bnum apow fpow).map do |x|
         v = query[x]
         v ? v.to_i : nil
       end
+
       case large = query['large']
       when 'false', nil
       when 'true'
@@ -27,6 +49,7 @@ module Metropolis::TC::HDB
       else
         raise ArgumentError, "invalid 'large' value: #{large}"
       end
+
       case compress = query['compress']
       when nil
       when 'deflate', 'bzip', 'tcbs'
@@ -48,11 +71,9 @@ module Metropolis::TC::HDB
       end
       [ hdb, path ]
     end
-    @rd_flags = TCHDB::OREADER
-    @wr_flags = TCHDB::OWRITER
     extend(RO) if @readonly
+    extend(EX) if @exclusive
   end
-
 
   def ex!(msg, hdb)
     raise "#{msg}: #{hdb.errmsg(hdb.ecode)}"

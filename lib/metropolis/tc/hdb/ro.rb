@@ -6,7 +6,6 @@ module Metropolis::TC::HDB::RO
   def self.extended(obj)
    obj.instance_eval do
       @wr_flags = nil
-      @rd_flags |= TokyoCabinet::HDB::ONOLCK
       @dbv.each { |(hdb, path)|
         hdb.open(path, @rd_flags) or ex!(:open, hdb)
       }

@@ -5,8 +5,14 @@ require 'tempfile'
 require 'rack'
 
 module TestRackReadWrite
+  attr_reader :app
+
   def test_rack_read_write
-    app = Metropolis.new(:uri => uri)
+    @app = Metropolis.new(:uri => uri)
+    basic_rest
+  end
+
+  def basic_rest
     o = { :lint => true, :fatal => true }
     req = Rack::MockRequest.new(app)
 
@@ -42,7 +48,11 @@ module TestRackReadWrite
   def test_rack_readonly
     tmp = Metropolis.new(:uri => uri)
     tmp.close!
-    app = Metropolis.new(:uri => uri, :readonly => true)
+    @app = Metropolis.new(:uri => uri, :readonly => true)
+    basic_rest_readonly
+  end
+
+  def basic_rest_readonly
     o = { :lint => true, :fatal => true }
     req = Rack::MockRequest.new(app)
 

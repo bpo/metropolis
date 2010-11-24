@@ -9,6 +9,10 @@ module Metropolis::Common
     @headers.merge!(opts[:response_headers] || {})
     @nr_slots = opts[:nr_slots] || 3
     @readonly = !!opts[:readonly]
+    @exclusive = !!opts[:exclusive]
+    if @readonly && @exclusive
+      raise ArgumentError, ":readonly and :exclusive may not be used together"
+    end
   end
 
   def r(code, body = nil)
