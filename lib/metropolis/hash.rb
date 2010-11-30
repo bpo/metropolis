@@ -20,7 +20,7 @@ module Metropolis::Hash
     end
     if @readonly
       extend Metropolis::Common::RO
-    else
+    elsif @path
       args = [ @db, @path, !!opts[:fsync] ]
       @clean_proc = Metropolis::Hash.finalizer_callback(args)
       ObjectSpace.define_finalizer(self, @clean_proc)
@@ -28,7 +28,7 @@ module Metropolis::Hash
   end
 
   def close!
-    unless @readonly
+    if ! @readonly && ! @path.nil?
       @clean_proc.call
       ObjectSpace.undefine_finalizer(self)
     end
