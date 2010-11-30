@@ -81,7 +81,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     r = o.head('hellox', {})
     assert_equal 404, r[0].to_i
     assert_equal 'text/plain', r[1]['Content-Type']
-    assert_equal '0', r[1]['Content-Length']
+    assert_equal '10', r[1]['Content-Length']
     assert_equal "", r[2].join('')
   end
 
