@@ -124,13 +124,13 @@ module Metropolis::TC::HDB
     r(200)
   end
 
-  def head(key)
+  def head(key, env)
     size = reader(key) { |hdb| hdb.vsiz(key) or ex!(:vsiz, hdb) }
     0 > size and return r(404, "")
     [ 200, { 'Content-Length' => size.to_s }.merge!(@headers), [] ]
   end
 
-  def get(key)
+  def get(key, env)
     value = nil
     reader(key) do |hdb|
       unless value = hdb.get(key)

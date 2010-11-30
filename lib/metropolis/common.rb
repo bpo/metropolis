@@ -27,9 +27,9 @@ module Metropolis::Common
       key = unescape($1)
       case env["REQUEST_METHOD"]
       when "GET"
-        get(key)
+        get(key, env)
       when "HEAD"
-        head(key)
+        head(key, env)
       when "DELETE"
         delete(key)
       when "PUT"
@@ -44,8 +44,8 @@ module Metropolis::Common
 
   # generic HEAD implementation, some databases can optimize this by
   # not retrieving the value
-  def head(key)
-    r = get(key)
+  def head(key, env)
+    r = get(key, env)
     r[2].clear
     r
   end

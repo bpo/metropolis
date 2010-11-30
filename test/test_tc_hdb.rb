@@ -42,19 +42,19 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_equal '8', r[1]['Content-Length']
     assert_equal "Created\n", r[2].join('')
 
-    r = o.get('hello')
+    r = o.get('hello', {})
     assert_equal 200, r[0].to_i
     assert_equal 'application/octet-stream', r[1]['Content-Type']
     assert_equal '5', r[1]['Content-Length']
     assert_equal %w(world), r[2]
 
-    r = o.head('hello')
+    r = o.head('hello', {})
     assert_equal 200, r[0].to_i
     assert_equal 'application/octet-stream', r[1]['Content-Type']
     assert_equal '5', r[1]['Content-Length']
     assert_equal [], r[2]
 
-    r = o.get('hellox')
+    r = o.get('hellox', {})
     assert_equal 200, r[0].to_i
     assert_equal 'application/octet-stream', r[1]['Content-Type']
     assert_equal '6', r[1]['Content-Length']
@@ -72,13 +72,13 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_equal '10', r[1]['Content-Length']
     assert_equal "Not Found\n", r[2].join('')
 
-    r = o.get('hellox')
+    r = o.get('hellox', {})
     assert_equal 404, r[0].to_i
     assert_equal 'text/plain', r[1]['Content-Type']
     assert_equal '10', r[1]['Content-Length']
     assert_equal "Not Found\n", r[2].join('')
 
-    r = o.head('hellox')
+    r = o.head('hellox', {})
     assert_equal 404, r[0].to_i
     assert_equal 'text/plain', r[1]['Content-Type']
     assert_equal '0', r[1]['Content-Length']
@@ -94,7 +94,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_equal 201, o.put("x", env)[0]
     env["rack.input"] = StringIO.new("wrong")
     assert_equal 409, o.put("x", env)[0]
-    assert_equal "hello", o.get("x")[2].join('')
+    assert_equal "hello", o.get("x", {})[2].join('')
   end
 
   def test_putcat
@@ -106,7 +106,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_equal 201, o.put("x", env)[0]
     env["rack.input"] = StringIO.new("MOAR")
     assert_equal 201, o.put("x", env)[0]
-    assert_equal "helloMOAR", o.get("x")[2].join('')
+    assert_equal "helloMOAR", o.get("x", {})[2].join('')
   end
 
   def test_multiproc
@@ -121,7 +121,7 @@ class Test_TC_HDB < Test::Unit::TestCase
         100.times {
           o.put(key, env)
           sio.rewind
-          o.get(key)
+          o.get(key, {})
         }
       }
     }
@@ -180,15 +180,15 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_equal 65536, optimize_args[0]
     assert_nil optimize_args[2]
     assert_equal 3, optimize_args[1]
-    assert_nothing_raised { obj.get(k) }
+    assert_nothing_raised { obj.get(k, {}) }
     assert_nothing_raised { obj.put(k,{'rack.input' => StringIO.new(data)}) }
 
     obj = Metropolis.new(:uri => "#{uri}?#{query}", :readonly => true)
-    assert_equal data, obj.get(k)[2].join('')
+    assert_equal data, obj.get(k, {})[2].join('')
     obj.close!
 
     obj = Metropolis.new(:uri => uri, :readonly => true)
-    assert_equal data, obj.get(k)[2].join('')
+    assert_equal data, obj.get(k, {})[2].join('')
     obj.close!
     sum = obj.instance_eval {
       @dbv.inject(0) { |size, (hdb,path)| size += File.stat(path).size }

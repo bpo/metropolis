@@ -5,9 +5,9 @@ module Metropolis::Common::RO
       key = unescape($1)
       case env["REQUEST_METHOD"]
       when "GET"
-        get(key)
+        get(key, env)
       when "HEAD"
-        head(key)
+        head(key, env)
       else
         r(403)
       end

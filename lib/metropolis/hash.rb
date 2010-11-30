@@ -35,7 +35,7 @@ module Metropolis::Hash
     @db = @path = nil
   end
 
-  def get(key)
+  def get(key, env)
     value = @db[key] or return r(404)
     [ 200, { 'Content-Length' => value.size.to_s }.merge!(@headers), [ value ] ]
   end
