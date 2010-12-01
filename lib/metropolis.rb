@@ -3,6 +3,9 @@ require 'rack'
 require 'uri'
 
 module Metropolis
+  autoload :InputWrapper, 'metropolis/input_wrapper'
+  autoload :Deflate, 'metropolis/deflate'
+  autoload :Gzip, 'metropolis/gzip'
   autoload :TC, 'metropolis/tc'
   autoload :Hash, 'metropolis/hash'
 

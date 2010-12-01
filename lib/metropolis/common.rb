@@ -13,6 +13,15 @@ module Metropolis::Common
     if @readonly && @exclusive
       raise ArgumentError, ":readonly and :exclusive may not be used together"
     end
+    case @encoding = opts[:encoding]
+    when nil
+    when :deflate
+      extend(Metropolis::Deflate)
+    when :gzip
+      extend(Metropolis::Gzip)
+    else
+      raise ArgumentError, "unsupported encoding"
+    end
   end
 
   def r(code, body = nil)
