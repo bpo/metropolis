@@ -8,6 +8,7 @@ module Metropolis
   autoload :Gzip, 'metropolis/gzip'
   autoload :TC, 'metropolis/tc'
   autoload :Hash, 'metropolis/hash'
+  autoload :TDB, 'metropolis/tdb'
 
   def self.new(opts = {})
     opts = opts.dup
@@ -17,6 +18,10 @@ module Metropolis
     when 'hash'
       opts[:path] = uri.path if uri.path != '/'
       rv.extend Metropolis::Hash
+    when 'tdb'
+      opts[:path_pattern] = uri.path
+      opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
+      rv.extend Metropolis::TDB
     when 'tc'
       opts[:path_pattern] = uri.path
       opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
