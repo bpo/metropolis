@@ -1,0 +1,12 @@
+= Internal specifications (Rack subset)
+
+For extreme simplicity, our internal API uses a strict subset of the Rack SPEC:
+
+* request input only uses the #read method without arguments
+  to read input all at once
+
+* response body must be a single-element Array containing one String
+
+* response headers is a regular Hash
+
+* response status is always a Fixnum
