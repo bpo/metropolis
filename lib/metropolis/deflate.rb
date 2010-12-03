@@ -18,7 +18,7 @@ module Metropolis::Deflate
   end
 
   def put(key, env)
-    Wrapper.new(env)
+    Wrapper.new(env) if 'deflate' != env['HTTP_CONTENT_ENCODING']
     super(key, env)
   end
 

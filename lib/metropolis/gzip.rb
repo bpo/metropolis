@@ -16,7 +16,7 @@ module Metropolis::Gzip
   end
 
   def put(key, env)
-    Wrapper.new(env)
+    Wrapper.new(env) if 'gzip' != env['HTTP_CONTENT_ENCODING']
     super(key, env)
   end
 
