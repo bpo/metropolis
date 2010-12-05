@@ -8,7 +8,7 @@ module TestRackReadWrite
   attr_reader :app
 
   def test_rack_read_write_deflated
-    @app = Metropolis.new(:uri => uri, :encoding => :deflate)
+    @app = Metropolis.new(@app_opts.merge(:encoding => :deflate))
     basic_rest
 
     blob = "." * 1024 * 1024
@@ -31,7 +31,7 @@ module TestRackReadWrite
   end
 
   def test_rack_read_write_gzipped
-    @app = Metropolis.new(:uri => uri, :encoding => :gzip)
+    @app = Metropolis.new(@app_opts.merge(:encoding => :gzip))
     basic_rest
 
     blob = "." * 1024 * 1024
@@ -54,7 +54,7 @@ module TestRackReadWrite
   end
 
   def test_rack_read_write
-    @app = Metropolis.new(:uri => uri)
+    @app = Metropolis.new(@app_opts)
     basic_rest
   end
 
@@ -92,9 +92,9 @@ module TestRackReadWrite
   end
 
   def test_rack_readonly
-    tmp = Metropolis.new(:uri => uri)
+    tmp = Metropolis.new(@app_opts)
     tmp.close!
-    @app = Metropolis.new(:uri => uri, :readonly => true)
+    @app = Metropolis.new(@app_opts.merge(:readonly => true))
     basic_rest_readonly
   end
 

@@ -14,18 +14,19 @@ module Metropolis
     opts = opts.dup
     rv = Object.new
     uri = opts[:uri] = URI.parse(opts[:uri])
+    if uri.path != '/' && opts[:path_pattern]
+      raise ArgumentError, ":path_pattern may only be used if path is '/'"
+    end
     case uri.scheme
     when 'hash'
       opts[:path] = uri.path if uri.path != '/'
       rv.extend Metropolis::Hash
     when 'tdb'
-      opts[:path_pattern] = uri.path
       opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
       rv.extend Metropolis::TDB
     when 'tc'
-      opts[:path_pattern] = uri.path
       opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
-      case ext = File.extname(uri.path)
+      case ext = File.extname(opts[:path_pattern] || uri.path)
       when '.tch'
         rv.extend Metropolis::TC::HDB
       else

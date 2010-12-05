@@ -11,7 +11,8 @@ class Test_TDB < Test::Unit::TestCase
     tmp = Tempfile.new('tdb')
     @path_pattern = tmp.path + ".%01x.tdb"
     tmp.close!
-    @uri = "tdb://#{@path_pattern}"
+    @uri = "tdb:///"
+    @app_opts = { :uri => @uri, :path_pattern => @path_pattern }
   end
 
   def teardown

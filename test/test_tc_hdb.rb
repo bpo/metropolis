@@ -12,7 +12,8 @@ class Test_TC_HDB < Test::Unit::TestCase
     tmp = Tempfile.new('tchdb')
     @path_pattern = tmp.path + ".%01x.tch"
     tmp.close!
-    @uri = "tc://#{@path_pattern}"
+    @uri = "tc:///"
+    @app_opts = { :path_pattern => @path_pattern, :uri => @uri }
   end
 
   def teardown
@@ -168,11 +169,11 @@ class Test_TC_HDB < Test::Unit::TestCase
     nr_bytes = 1024 * 1024 * 20
     data = "0" * nr_bytes
     obj = nil
-    assert_nothing_raised { obj = Metropolis.new(:uri => uri) }
+    assert_nothing_raised { obj = Metropolis.new(@app_opts) }
 
     query = "large=true&apow=3&bnum=65536&compress=deflate"
     assert_nothing_raised {
-      obj = Metropolis.new(:uri => "#{uri}?#{query}")
+      obj = Metropolis.new(@app_opts.merge(:uri => "#{uri}?#{query}"))
     }
     optimize_args = obj.instance_variable_get(:@optimize)
     flags = TokyoCabinet::HDB::TLARGE | TokyoCabinet::HDB::TDEFLATE
@@ -183,11 +184,13 @@ class Test_TC_HDB < Test::Unit::TestCase
     assert_nothing_raised { obj.get(k, {}) }
     assert_nothing_raised { obj.put(k,{'rack.input' => StringIO.new(data)}) }
 
-    obj = Metropolis.new(:uri => "#{uri}?#{query}", :readonly => true)
+    opts = @app_opts.merge(:uri => "#{uri}?#{query}", :readonly => true)
+    obj = Metropolis.new(opts)
     assert_equal data, obj.get(k, {})[2].join('')
     obj.close!
 
-    obj = Metropolis.new(:uri => uri, :readonly => true)
+    opts = @app_opts.merge(:uri => uri, :readonly => true)
+    obj = Metropolis.new(opts)
     assert_equal data, obj.get(k, {})[2].join('')
     obj.close!
     sum = obj.instance_eval {
@@ -198,13 +201,15 @@ class Test_TC_HDB < Test::Unit::TestCase
   end
 
   def test_exclusive
-    @app = Metropolis.new(:uri => uri, :exclusive => true)
+    opts = @app_opts.merge(:uri => uri, :exclusive => true)
+    @app = Metropolis.new(opts)
     assert_equal(app.method(:reader), app.method(:writer))
     basic_rest
   end
 
   def test_no_rdlock
-    @app = Metropolis.new(:uri => "#{uri}?rdlock=false")
+    opts = @app_opts.merge(:uri => "#{uri}?rdlock=false")
+    @app = Metropolis.new(opts)
     nolck = ::TokyoCabinet::HDB::ONOLCK
     flags = @app.instance_variable_get(:@rd_flags)
     assert((flags & nolck) == nolck)
@@ -214,7 +219,7 @@ class Test_TC_HDB < Test::Unit::TestCase
   end
 
   def test_no_wrlock
-    @app = Metropolis.new(:uri => "#{uri}?wrlock=false")
+    @app = Metropolis.new(@app_opts.merge(:uri => "#{uri}?wrlock=false"))
     nolck = ::TokyoCabinet::HDB::ONOLCK
     flags = @app.instance_variable_get(:@wr_flags)
     assert((flags & nolck) == nolck)

@@ -11,6 +11,7 @@ class Test_Hash < Test::Unit::TestCase
     @tmp = Tempfile.new('hash')
     File.unlink(@tmp)
     @uri = "hash://#{@tmp.path}"
+    @app_opts = { :uri => @uri }
   end
 
   def teardown
@@ -19,7 +20,7 @@ class Test_Hash < Test::Unit::TestCase
 
   def test_marshalled
     File.open(@tmp, "wb") { |fp| fp.write(Marshal.dump({"x" => "y"})) }
-    app = Metropolis.new(:uri => @uri, :readonly => true)
+    app = Metropolis.new(@app_opts.merge(:readonly => true))
     o = { :lint => true, :fatal => true }
     req = Rack::MockRequest.new(app)
 
