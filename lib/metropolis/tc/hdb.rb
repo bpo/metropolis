@@ -11,16 +11,12 @@ module Metropolis::TC::HDB
 
   def setup(opts)
     super
-    path_pattern = opts[:path_pattern]
-    path_pattern.scan(/%\d*x/).size == 1 or
-      raise ArgumentError, "only one '/%\d*x/' may appear in #{path_pattern}"
-
     @rd_flags = TCHDB::OREADER
     @wr_flags = TCHDB::OWRITER
 
     @optimize = nil
-    if query = opts[:query]
-      case query['rdlock']
+    if @query
+      case @query['rdlock']
       when 'true', nil
       when 'false'
         @rd_flags |= TCHDB::ONOLCK
@@ -28,7 +24,7 @@ module Metropolis::TC::HDB
         raise ArgumentError, "'rdlock' must be 'true' or 'false'"
       end
 
-      case query['wrlock']
+      case @query['wrlock']
       when 'true', nil
       when 'false'
         @wr_flags |= TCHDB::ONOLCK
@@ -38,11 +34,11 @@ module Metropolis::TC::HDB
 
       flags = 0
       @optimize = %w(bnum apow fpow).map do |x|
-        v = query[x]
+        v = @query[x]
         v ? v.to_i : nil
       end
 
-      case large = query['large']
+      case large = @query['large']
       when 'false', nil
       when 'true'
         flags |= TCHDB::TLARGE
@@ -50,7 +46,7 @@ module Metropolis::TC::HDB
         raise ArgumentError, "invalid 'large' value: #{large}"
       end
 
-      case compress = query['compress']
+      case compress = @query['compress']
       when nil
       when 'deflate', 'bzip', 'tcbs'
         flags |= TCHDB.const_get("T#{compress.upcase}")
@@ -59,8 +55,9 @@ module Metropolis::TC::HDB
       end
       @optimize << flags
     end
+    @nr_slots = 1 unless @path_pattern
     @dbv = (0...@nr_slots).to_a.map do |slot|
-      path = sprintf(path_pattern, slot)
+      path = @path_pattern ? sprintf(@path_pattern, slot) : @uri.path
       hdb = TCHDB.new
       unless @readonly
         hdb.open(path, TCHDB::OWRITER | TCHDB::OCREAT) or ex!(:open, hdb)

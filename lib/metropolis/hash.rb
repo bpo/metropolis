@@ -8,7 +8,7 @@ module Metropolis::Hash
 
   def setup(opts)
     super
-    if @path = opts[:path]
+    if @path
       begin
         @db = Marshal.load(File.open(@path, "rb") { |fp| fp.read })
         Hash === @db or raise ArgumentError, "#@path is not a marshaled Hash"

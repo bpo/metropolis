@@ -13,28 +13,22 @@ module Metropolis
   def self.new(opts = {})
     opts = opts.dup
     rv = Object.new
-    uri = opts[:uri] = URI.parse(opts[:uri])
-    if uri.path != '/' && opts[:path_pattern]
-      raise ArgumentError, ":path_pattern may only be used if path is '/'"
+    uri = URI.parse(opts[:uri])
+    rv.instance_eval do
+      @uri = uri
+      @query = @uri.query ? Rack::Utils.parse_query(@uri.query) : nil
+      @path_pattern = opts[:path_pattern]
+      @path = @uri.path if @uri.path != '/'
     end
-    case uri.scheme
-    when 'hash'
-      opts[:path] = uri.path if uri.path != '/'
-      rv.extend Metropolis::Hash
-    when 'tdb'
-      opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
-      rv.extend Metropolis::TDB
-    when 'tc'
-      opts[:query] = Rack::Utils.parse_query(uri.query) if uri.query
-      case ext = File.extname(opts[:path_pattern] || uri.path)
-      when '.tch'
-        rv.extend Metropolis::TC::HDB
-      else
-        raise ArgumentError, "unsupported suffix: #{ext}"
-      end
+
+    base = case uri.scheme
+    when 'hash' then Metropolis::Hash
+    when 'tdb' then Metropolis::TDB
+    when 'tc' then Metropolis::TC
     else
       raise ArgumentError, "unsupported URI scheme: #{uri.scheme}"
     end
+    rv.extend(base)
     rv.setup(opts)
     rv
   end

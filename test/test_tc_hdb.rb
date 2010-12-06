@@ -21,12 +21,7 @@ class Test_TC_HDB < Test::Unit::TestCase
   end
 
   def osetup
-    o = Object.new
-    o.extend Metropolis::TC::HDB
-    assert_nothing_raised do
-      o.setup :path_pattern => @path_pattern
-    end
-    o
+    Metropolis.new(@app_opts)
   end
 
   def test_create_put_get_delete
@@ -135,11 +130,7 @@ class Test_TC_HDB < Test::Unit::TestCase
     key = "x"
     wr = osetup
     wr.put(key, { "rack.input" => StringIO.new("OK") })
-    o = Object.new
-    o.extend Metropolis::TC::HDB
-    assert_nothing_raised do
-      o.setup :path_pattern => @path_pattern, :readonly => true
-    end
+    o = Metropolis.new(@app_opts.merge(:readonly => true))
     %w(PUT DELETE).each do |rm|
       env = {
         "rack.input" => StringIO.new("FAIL"),

@@ -4,10 +4,21 @@ module Metropolis::Common
   autoload :RO, 'metropolis/common/ro'
 
   def setup(opts)
-    @uri = opts[:uri]
     @headers = { 'Content-Type' => 'application/octet-stream' }
     @headers.merge!(opts[:response_headers] || {})
-    @nr_slots = opts[:nr_slots] || 3
+    @nr_slots = opts[:nr_slots]
+
+    if @path_pattern
+      @nr_slots ||= 3
+      @uri.path == '/' or
+        raise ArgumentError, ":path_pattern may only be used if path is '/'"
+      @path_pattern.scan(/%\d*x/).size == 1 or
+        raise ArgumentError, "only one '/%\d*x/' may appear in #@path_pattern"
+    else
+      @nr_slots and
+        raise ArgumentError, ":nr_slots may be used with :path_pattern"
+    end
+
     @readonly = !!opts[:readonly]
     @exclusive = !!opts[:exclusive]
     if @readonly && @exclusive
