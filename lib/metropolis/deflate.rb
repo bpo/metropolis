@@ -8,7 +8,7 @@ module Metropolis::Deflate
     status, headers, body = r = super
     if 200 == status && /\bdeflate\b/ !~ env['HTTP_ACCEPT_ENCODING']
       inflater = Zlib::Inflate.new(-Zlib::MAX_WBITS)
-      body[0] = "#{inflater.inflate(body[0])}#{inflater.finish}"
+      body[0] = inflater.inflate(body[0]) << inflater.finish
       inflater.end
       headers['Content-Length'] = body[0].size.to_s
       headers.delete('Content-Encoding')
@@ -39,7 +39,7 @@ module Metropolis::Deflate
         Zlib::DEF_MEM_LEVEL,
         Zlib::DEFAULT_STRATEGY
       )
-      "#{deflater.deflate(@input.read)}#{deflater.finish}"
+      deflater.deflate(@input.read) << deflater.finish
     end
   end
 end
