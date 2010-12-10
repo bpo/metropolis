@@ -18,6 +18,13 @@ module Metropolis::TDB
       size = @query['hash_size'] and @tdb_opts[:hash_size] = size.to_i
       hash = @query['hash'] and @tdb_opts[:hash] = hash.to_sym
 
+      case @query['threadsafe']
+      when 'true'; @tdb_opts[:threadsafe] = true
+      when 'false', nil
+      else
+        raise ArgumentError, "'threadsafe' must be 'true' or 'false'"
+      end
+
       case @query['volatile']
       when 'true'; @tdb_opts[:tdb_flags] |= TDB::VOLATILE
       when 'false', nil
