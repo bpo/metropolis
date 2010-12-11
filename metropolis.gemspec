@@ -40,7 +40,6 @@ Gem::Specification.new do |s|
 
   s.test_files = test_files
   s.add_dependency(%q<rack>)
-  s.add_dependency(%q<tokyocabinet>)
 
   # s.licenses = %w(AGPL) # licenses= method is not in older RubyGems
 end
