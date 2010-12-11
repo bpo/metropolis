@@ -68,6 +68,8 @@ module Metropolis::TC::HDB
       end
       [ hdb, path ]
     end
+    @multi_hash ||= :digest_sha1
+    extend Metropolis::MultiHash
     extend(RO) if @readonly
     extend(EX) if @exclusive
   end
@@ -77,7 +79,7 @@ module Metropolis::TC::HDB
   end
 
   def writer(key, &block)
-    hdb, path = @dbv[key.hash % @nr_slots]
+    hdb, path = @dbv[multi_hash(key) % @nr_slots]
     hdb.open(path, @wr_flags) or ex!(:open, hdb)
     yield hdb
     ensure
@@ -85,7 +87,7 @@ module Metropolis::TC::HDB
   end
 
   def reader(key)
-    hdb, path = @dbv[key.hash % @nr_slots]
+    hdb, path = @dbv[multi_hash(key) % @nr_slots]
     hdb.open(path, @rd_flags) or ex!(:open, hdb)
     yield hdb
     ensure

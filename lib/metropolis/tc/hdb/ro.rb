@@ -14,6 +14,6 @@ module Metropolis::TC::HDB::RO
   end
 
   def reader(key)
-    yield @ro_dbv[key.hash % @nr_slots]
+    yield @ro_dbv[multi_hash(key) % @nr_slots]
   end
 end

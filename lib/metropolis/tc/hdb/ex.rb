@@ -11,7 +11,7 @@ module Metropolis::TC::HDB::EX
   end
 
   def reader(key)
-    yield @ex_dbv[key.hash % @nr_slots]
+    yield @ex_dbv[multi_hash(key) % @nr_slots]
   end
 
   alias_method :writer, :reader

@@ -9,6 +9,7 @@ module Metropolis
   autoload :TC, 'metropolis/tc'
   autoload :Hash, 'metropolis/hash'
   autoload :TDB, 'metropolis/tdb'
+  autoload :MultiHash, 'metropolis/multi_hash'
 
   def self.new(opts = {})
     opts = opts.dup
@@ -19,6 +20,7 @@ module Metropolis
       @query = @uri.query ? Rack::Utils.parse_query(@uri.query) : nil
       @path_pattern = opts[:path_pattern]
       @path = @uri.path if @uri.path != '/'
+      @multi_hash = opts[:multi_hash]
     end
 
     base = case uri.scheme
