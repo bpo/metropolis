@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.files = manifest
   s.homepage = %q{http://metropolis.bogomips.org/}
 
-  summary = File.readlines("README")[0].delete('\'')
+  summary = File.readlines("README")[0].split(/\s*:\s*/)[1]
   s.rdoc_options = [ "-t", summary ]
   s.require_paths = %w(lib)
   s.rubyforge_project = %q{rainbows}

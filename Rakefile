@@ -116,6 +116,9 @@ task :raa_update do
   s = Gem::Specification.load('metropolis.gemspec')
   desc = [ s.description.strip ]
   desc << ""
+  desc << "Metropolis is licensed under the terms of the AGPLv3, " \
+          "but RAA doesn't have a field for it"
+  desc << ""
   desc << "* #{s.email}"
   desc << "* #{git_url}"
   desc << "* #{cgit_url}"
@@ -125,14 +128,14 @@ task :raa_update do
     :name => s.name,
     :short_description => s.summary,
     :version => s.version.to_s,
-    :status => 'stable',
+    :status => 'experimental',
     :owner => s.authors.first,
     :email => s.email,
     :category_major => 'Library',
     :category_minor => 'Web',
     :url => s.homepage,
-    :download => "http://rubyforge.org/frs/?group_id=1306",
-    :license => "Ruby's",
+    :download => "http://rubyforge.org/frs/?group_id=8977",
+    :license => "OpenSource", # AGPLv3, actually
     :description_style => 'Plain',
     :description => desc,
     :pass => password,
