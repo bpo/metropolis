@@ -2,6 +2,10 @@
 require 'rack'
 require 'uri'
 
+# Metropolis is configured using Rack::Builder, so "run" it like
+# any other Rack application by placing it in your config.ru:
+#
+#     run Metropolis.new(:uri => "hash:///")
 module Metropolis
   autoload :InputWrapper, 'metropolis/input_wrapper'
   autoload :Deflate, 'metropolis/deflate'

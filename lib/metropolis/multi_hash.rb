@@ -1,4 +1,5 @@
 # -*- encoding: binary -*-
+# :enddoc:
 module Metropolis::MultiHash
   autoload :Digest, 'metropolis/multi_hash/digest'
   autoload :ToI, 'metropolis/multi_hash/to_i'
