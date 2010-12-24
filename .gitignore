@@ -12,6 +12,7 @@
 log/
 pkg/
 /vendor
+/LATEST
 /NEWS
 /ChangeLog
 /.manifest

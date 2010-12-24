@@ -2,6 +2,9 @@
 
 ENV["VERSION"] or abort "VERSION= must be specified"
 manifest = File.readlines('.manifest').map! { |x| x.chomp! }
+require 'wrongdoc'
+extend Wrongdoc::Gemspec
+name, summary, title = readme_metadata
 
 # don't bother with tests that fork, not worth our time to get working
 # with `gem check -t` ... (of course we care for them when testing with
@@ -14,21 +17,11 @@ Gem::Specification.new do |s|
 
   s.authors = ["The Sleeper"]
   s.date = Time.now.utc.strftime('%Y-%m-%d')
-  s.description = File.read("README").split(/\n\n/)[1].delete('\\')
+  s.description = readme_description.delete('\\')
   s.email = %q{metropolis@librelist.org}
   s.executables = []
 
-  s.extra_rdoc_files = File.readlines('.document').map! do |x|
-    x.chomp!
-    if File.directory?(x)
-      manifest.grep(%r{\A#{x}/})
-    elsif File.file?(x)
-      x
-    else
-      nil
-    end
-  end.flatten.compact
-
+  s.extra_rdoc_files = extra_rdoc_files
   s.files = manifest
   s.homepage = %q{http://metropolis.bogomips.org/}
 
@@ -40,6 +33,7 @@ Gem::Specification.new do |s|
 
   s.test_files = test_files
   s.add_dependency(%q<rack>)
+  s.add_development_dependency('wrongdoc', '~> 1.0.1')
 
   # s.licenses = %w(AGPL) # licenses= method is not in older RubyGems
 end
