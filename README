@@ -8,9 +8,10 @@ limitations of the kernel, hardware and filesystem.
 
 == Features
 
-* Currently supports the TokyoCabinet hash database format, other
-  database formats will be supported along with KyotoCabinet, as
-  well as other key-value stores.
+* Currently supports the {TDB}[http://bogomips.org/ruby-tdb/] database
+  along with the TokyoCabinet hash database format, other database
+  formats will be supported along with KyotoCabinet, as well as other
+  key-value stores.
 
 * Compatible with all Rack-compatible servers
 
