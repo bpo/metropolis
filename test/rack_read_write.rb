@@ -7,6 +7,29 @@ require 'rack'
 module TestRackReadWrite
   attr_reader :app
 
+  def test_rack_read_write_suffix_mime
+    @app = Metropolis.new(@app_opts.merge(:encoding => :deflate,
+                                          :use => Metropolis::SuffixMime))
+    basic_rest
+
+    o = { :lint => true, :fatal => true }
+    req = Rack::MockRequest.new(@app)
+    r = req.put("/asdf.jpg", o.merge(:input => "ASDF"))
+    assert_equal 201, r.status
+    assert_equal "text/plain", r.headers["Content-Type"]
+    assert_equal "Created\n", r.body
+
+    r = req.get("/asdf.jpg")
+    assert_equal 200, r.status
+    assert_equal "image/jpeg", r.headers["Content-Type"]
+    assert_equal "ASDF", r.body
+
+    r = req.request("HEAD", "/asdf.jpg")
+    assert_equal 200, r.status
+    assert_equal "image/jpeg", r.headers["Content-Type"]
+    assert_equal "", r.body
+  end
+
   def test_rack_read_write_deflated
     @app = Metropolis.new(@app_opts.merge(:encoding => :deflate))
     basic_rest

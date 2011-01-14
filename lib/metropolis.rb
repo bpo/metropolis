@@ -14,6 +14,7 @@ module Metropolis
   autoload :Hash, 'metropolis/hash'
   autoload :TDB, 'metropolis/tdb'
   autoload :MultiHash, 'metropolis/multi_hash'
+  autoload :SuffixMime, 'metropolis/suffix_mime'
 
   def self.new(opts = {})
     opts = opts.dup

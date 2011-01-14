@@ -33,6 +33,9 @@ module Metropolis::Common
     else
       raise ArgumentError, "unsupported encoding"
     end
+    if filters = opts[:use]
+      Array(filters).each { |filter| extend filter }
+    end
   end
 
   def r(code, body = nil)
