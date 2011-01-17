@@ -21,19 +21,18 @@ Gem::Specification.new do |s|
   s.email = %q{metropolis@librelist.org}
   s.executables = []
 
-  s.extra_rdoc_files = extra_rdoc_files
+  s.extra_rdoc_files = extra_rdoc_files(manifest)
   s.files = manifest
   s.homepage = %q{http://metropolis.bogomips.org/}
 
-  summary = File.readlines("README")[0].split(/\s*:\s*/)[1]
-  s.rdoc_options = [ "-t", summary ]
+  s.rdoc_options = rdoc_options
   s.require_paths = %w(lib)
   s.rubyforge_project = %q{rainbows}
   s.summary = summary
 
   s.test_files = test_files
   s.add_dependency(%q<rack>)
-  s.add_development_dependency('wrongdoc', '~> 1.0.1')
+  s.add_development_dependency('wrongdoc', '~> 1.3')
 
   # s.licenses = %w(AGPL) # licenses= method is not in older RubyGems
 end
