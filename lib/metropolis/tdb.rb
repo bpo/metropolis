@@ -9,6 +9,7 @@ module Metropolis::TDB
 
   def setup(opts)
     super
+    @rbuf = ""
     @tdb_opts = { :tdb_flags => 0 }
     if @readonly
       @tdb_opts[:open_flags] = IO::RDONLY
@@ -62,7 +63,7 @@ module Metropolis::TDB
   end
 
   def get(key, env)
-    value = db(key) { |tdb| tdb.fetch(key) } or return r(404)
+    value = db(key) { |tdb| tdb.fetch(key, @rbuf) } or return r(404)
     [ 200, { 'Content-Length' => value.size.to_s }.merge!(@headers), [ value ] ]
   end
 end
