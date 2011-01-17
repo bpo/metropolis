@@ -1,9 +1,11 @@
 # -*- encoding: binary -*-
 module Metropolis::Common::RO
+  include Metropolis::Constants
+
   def call(env)
-    if %r{\A/(.*)\z} =~ env["PATH_INFO"]
+    if %r{\A/(.*)\z} =~ env[PATH_INFO]
       key = unescape($1)
-      case env["REQUEST_METHOD"]
+      case env[REQUEST_METHOD]
       when "GET"
         get(key, env)
       when "HEAD"

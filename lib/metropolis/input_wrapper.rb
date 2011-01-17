@@ -1,9 +1,11 @@
 # -*- encoding: binary -*-
 
 class Metropolis::InputWrapper
+  include Metropolis::Constants
+
   def initialize(env)
-    @input = env["rack.input"]
-    env["rack.input"] = self
+    @input = env[Rack_Input]
+    env[Rack_Input] = self
   end
 
   def read(*args)

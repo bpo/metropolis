@@ -95,15 +95,15 @@ module Metropolis::TC::HDB
   end
 
   def put(key, env)
-    value = env["rack.input"].read
+    value = env[Rack_Input].read
     writer(key) do |hdb|
-      case env['HTTP_X_TT_PDMODE']
-      when '1'
+      case env[HTTP_X_TT_PDMODE]
+      when "1"
         unless hdb.putkeep(key, value)
           TCHDB::EKEEP == hdb.ecode and return r(409)
           ex!(:putkeep, hdb)
         end
-      when '2'
+      when "2"
         hdb.putcat(key, value) or ex!(:putcat, hdb)
       else
         # ttserver does not care for other PDMODE values, so we don't, either
@@ -131,7 +131,7 @@ module Metropolis::TC::HDB
         ex!(:get, hdb)
       end
     end
-    [ 200, { 'Content-Length' => value.size.to_s }.merge!(@headers), [ value ] ]
+    [ 200, { Content_Length => value.size.to_s }.merge!(@headers), [ value ] ]
   end
 
   def close!

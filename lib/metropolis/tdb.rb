@@ -44,13 +44,13 @@ module Metropolis::TDB
   end
 
   def put(key, env)
-    value = env["rack.input"].read
+    value = env[Rack_Input].read
     db(key) do |tdb|
-      case env['HTTP_X_TT_PDMODE']
-      when '1'
+      case env[HTTP_X_TT_PDMODE]
+      when "1"
         # TODO: make this atomic
         return r(409) if tdb.include?(key)
-      when '2'
+      when "2"
         value = (tdb.get(key) || "") << value
       end
       tdb.store(key, value)
@@ -64,6 +64,6 @@ module Metropolis::TDB
 
   def get(key, env)
     value = db(key) { |tdb| tdb.fetch(key, @rbuf) } or return r(404)
-    [ 200, { 'Content-Length' => value.size.to_s }.merge!(@headers), [ value ] ]
+    [ 200, { Content_Length => value.size.to_s }.merge!(@headers), [ value ] ]
   end
 end

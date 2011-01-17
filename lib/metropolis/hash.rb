@@ -37,16 +37,16 @@ module Metropolis::Hash
 
   def get(key, env)
     value = @db[key] or return r(404)
-    [ 200, { 'Content-Length' => value.size.to_s }.merge!(@headers), [ value ] ]
+    [ 200, { Content_Length => value.size.to_s }.merge!(@headers), [ value ] ]
   end
 
   def put(key, env)
-    value = env["rack.input"].read
-    case env['HTTP_X_TT_PDMODE']
-    when '1'
+    value = env[Rack_Input].read
+    case env[HTTP_X_TT_PDMODE]
+    when "1"
       @db.exists?(key) and r(409)
       @db[key] = value
-    when '2'
+    when "2"
       (tmp = @db[key] ||= "") << value
     else
       @db[key] = value

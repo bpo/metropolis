@@ -41,4 +41,5 @@ module Metropolis
   end
 end
 
+require 'metropolis/constants'
 require 'metropolis/common'

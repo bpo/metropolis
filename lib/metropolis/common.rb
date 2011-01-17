@@ -1,10 +1,13 @@
 # -*- encoding: binary -*-
 module Metropolis::Common
   include Rack::Utils # unescape
+  include Metropolis::Constants
+  HTTP_STATUS_BODIES = {}
+
   autoload :RO, 'metropolis/common/ro'
 
   def setup(opts)
-    @headers = { 'Content-Type' => 'application/octet-stream' }
+    @headers = { Content_Type => 'application/octet-stream' }
     @headers.merge!(opts[:response_headers] || {})
     @nr_slots = opts[:nr_slots]
 
@@ -39,16 +42,16 @@ module Metropolis::Common
   end
 
   def r(code, body = nil)
-    body ||= "#{HTTP_STATUS_CODES[code]}\n"
+    body ||= HTTP_STATUS_BODIES[code] ||= "#{HTTP_STATUS_CODES[code]}\n"
     [ code,
-      { 'Content-Length' => body.size.to_s, 'Content-Type' => 'text/plain' },
+      { Content_Length => body.size.to_s, Content_Type => Text_Plain },
       [ body ] ]
   end
 
   def call(env)
-    if %r{\A/(.*)\z} =~ env["PATH_INFO"]
+    if %r{\A/(.*)\z} =~ env[PATH_INFO]
       key = unescape($1)
-      case env["REQUEST_METHOD"]
+      case env[REQUEST_METHOD]
       when "GET"
         get(key, env)
       when "HEAD"
